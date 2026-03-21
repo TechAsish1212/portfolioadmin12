@@ -40,7 +40,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     >
       <div className="flex items-center justify-between h-16 px-4 border-b">
         {sidebarOpen && (
-          <h1 className="text-xl font-bold text-gray-800">Portfolio Admin</h1>
+          <h1 className="text-xl font-bold text-gray-800">
+            <span className='text-sky-400'>&lt;</span>
+            <span className='text-sky-400'>Asish</span>
+            <span className='text-sky-400'>/</span>
+            <span className='bg-gradient-to-r from-sky-400 via-blue-500 to-purple-500 bg-clip-text text-transparent'>Kumar</span>
+            <span className='text-[#8245ec]'>&gt;</span>
+            </h1>
         )}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
