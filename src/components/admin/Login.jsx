@@ -163,7 +163,8 @@ import { useAdmin } from "../context/AdminContext";
 import axios from "axios";
 import { Lock, Mail, LogIn } from 'lucide-react';
 
-const API_URL = "http://localhost:4004/api";
+// const API_URL = "http://localhost:4004/api";
+const API_URL = 'https://portfolio12server.onrender.com/api';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL ='http://localhost:4004/api';
+// const API_URL ='http://localhost:4004/api';
+const API_URL = 'https://portfolio12server.onrender.com/api';
 
 // Get auth token
 const getAuthToken = () => localStorage.getItem('adminToken');
