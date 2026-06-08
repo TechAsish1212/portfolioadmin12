@@ -184,7 +184,7 @@ export const AdminProvider = ({ children }) => {
       }
       
       if (profileData.cvFile) {
-        formData.append('resume', profileData.cvFile); // Note: backend uses 'resume' not 'cv'
+        formData.append('cv', profileData.cvFile); // Note: backend uses 'resume' not 'cv'
       }
 
       const response = await profileApi.update(formData);
