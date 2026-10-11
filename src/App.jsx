@@ -29,10 +29,10 @@
 //         <Routes>
 //           {/* Public Routes */}
 //           <Route path="/" element={<Login />} />
-          
+
 //           {/* Admin Login Route - No Layout */}
 //           <Route path="/admin/login" element={<Login />} />
-          
+
 //           {/* Protected Admin Routes - With Layout */}
 //           <Route path="/admin" element={
 //             <Layout>
@@ -69,7 +69,7 @@
 //               <ProfileManager />
 //             </Layout>
 //           } />
-          
+
 //           {/* Redirect any unknown admin routes to dashboard */}
 //           <Route path="/admin/*" element={
 //             <Layout>
@@ -97,6 +97,7 @@ import QuotesManager from './components/admin/QuotesManager';
 import ProfileManager from './components/admin/ProfileManager';
 import { AdminProvider } from './components/context/AdminContext';
 import { LogIn, Shield, ArrowRight, Lock } from 'lucide-react';
+import ExperienceManager from './components/admin/experience';
 
 // Your main portfolio component with login button
 const Portfolio = () => {
@@ -110,14 +111,14 @@ const Portfolio = () => {
         >
           {/* Background animation */}
           <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-          
+
           {/* Icon with animation */}
           <div className="relative flex items-center gap-2">
             <Lock size={18} className="group-hover:scale-110 transition-transform duration-300" />
             <span className="font-medium">Admin Login</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
           </div>
-          
+
           {/* Glow effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
         </Link>
@@ -236,6 +237,14 @@ export function App() {
               <ProjectsManager />
             </Layout>
           } />
+          <Route
+            path="/admin/experience"
+            element={
+              <Layout>
+                <ExperienceManager />
+              </Layout>
+            }
+          />
           <Route path="/admin/skills" element={
             <Layout>
               <SkillsManager />

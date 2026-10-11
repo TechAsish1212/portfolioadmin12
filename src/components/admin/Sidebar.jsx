@@ -22,6 +22,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/projects', icon: FolderKanban, label: 'Projects' },
+    { path: '/admin/experience', icon: FolderKanban, label: 'Experience' },
     { path: '/admin/skills', icon: Code2, label: 'Skills' },
     { path: '/admin/education', icon: GraduationCap, label: 'Education' },
     { path: '/admin/quotes', icon: Quote, label: 'Quotes' },

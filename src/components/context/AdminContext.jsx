@@ -6,6 +6,7 @@ import { educationApi } from "../../api/educationApi";
 import { projectApi } from "../../api/projectApi";
 import { profileApi } from "../../api/profileApi";
 import axios from "axios";
+import { experienceApi } from "../../api/experienceApi";
 
 const AdminContext = createContext();
 
@@ -27,16 +28,18 @@ export const AdminProvider = ({ children }) => {
   const [portfolioProjects, setPortfolioProjects] = useState([]);
   const [educationList, setEducationList] = useState([]);
   const [quotes, setQuotes] = useState([]);
-  
+  const [experiences, setExperiences] = useState([]);
+
   const [loading, setLoading] = useState({
     skills: false,
     projects: false,
     education: false,
     quotes: false,
     profile: false,
+    experiences: false,
     initial: true
   });
-  
+
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
@@ -46,7 +49,7 @@ export const AdminProvider = ({ children }) => {
     // Personal Info
     name: "Asish",
     title: "Full Stack Developer",
-    
+
     // Images (matching backend field names)
     heroImage: null,
     heroImage_public_id: null,
@@ -56,7 +59,7 @@ export const AdminProvider = ({ children }) => {
     talkImg_public_id: null,
     profileImg: null,
     profileImg_public_id: null,
-    
+
     // Social Links (matching backend structure)
     socialLinks: {
       github: "https://github.com/TechAsish1212",
@@ -95,7 +98,7 @@ export const AdminProvider = ({ children }) => {
     const checkAuth = () => {
       const token = localStorage.getItem('adminToken');
       const storedName = localStorage.getItem('adminName');
-      
+
       if (token) {
         setIsAuthenticated(true);
         if (storedName) {
@@ -129,6 +132,7 @@ export const AdminProvider = ({ children }) => {
       fetchQuotes();
       fetchProjects();
       fetchProfile();
+      fetchExperiences();
     }
   }, [isAuthenticated]);
 
@@ -138,10 +142,10 @@ export const AdminProvider = ({ children }) => {
 
   const fetchProfile = async () => {
     if (!isAuthenticated) return;
-    
+
     setLoading(prev => ({ ...prev, profile: true }));
     setError(null);
-    
+
     try {
       const response = await profileApi.get();
       if (response.success && response.data) {
@@ -162,33 +166,33 @@ export const AdminProvider = ({ children }) => {
   const updateProfile = async (profileData) => {
     setLoading(prev => ({ ...prev, profile: true }));
     setError(null);
-    
+
     try {
       const formData = new FormData();
-      
+
       // Append text fields (matching backend field names)
       if (profileData.name) formData.append('name', profileData.name);
       if (profileData.title) formData.append('title', profileData.title);
-      
+
       // Append social links (matching backend field names)
       if (profileData.socialLinks?.github) formData.append('github', profileData.socialLinks.github);
       if (profileData.socialLinks?.linkedin) formData.append('linkedin', profileData.socialLinks.linkedin);
-      
+
       // Append files if they exist (matching backend field names)
       if (profileData.heroImageFile) {
         formData.append('heroImage', profileData.heroImageFile);
       }
-      
+
       if (profileData.talkImgFile) {
         formData.append('talkImg', profileData.talkImgFile);
       }
-      
+
       if (profileData.cvFile) {
         formData.append('cv', profileData.cvFile); // Note: backend uses 'resume' not 'cv'
       }
 
       const response = await profileApi.update(formData);
-      
+
       if (response.success) {
         setProfile(response.data);
         if (response.data.name) {
@@ -626,6 +630,145 @@ export const AdminProvider = ({ children }) => {
   };
 
   // =====================
+  // Experience
+  // =====================
+
+  const fetchExperiences = async () => {
+    setLoading((prev) => ({ ...prev, experiences: true }));
+    setError(null);
+
+    try {
+      const response = await experienceApi.getAll();
+
+      if (response.success) {
+        setExperiences(response.data);
+      } else {
+        throw new Error("Failed to fetch experiences");
+      }
+    } catch (error) {
+      console.error("Error fetching experiences:", error);
+      setError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading((prev) => ({ ...prev, experiences: false }));
+    }
+  };
+
+  const addExperience = async (experienceData) => {
+    setLoading((prev) => ({ ...prev, experiences: true }));
+    setError(null);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("companyName", experienceData.companyName);
+      formData.append("position", experienceData.position);
+      formData.append("employmentType", experienceData.employmentType || "");
+      formData.append("location", experienceData.location || "");
+      formData.append("startDate", experienceData.startDate);
+      formData.append(
+        "currentlyWorking",
+        String(experienceData.currentlyWorking)
+      );
+      formData.append("description", experienceData.description);
+
+      if (!experienceData.currentlyWorking && experienceData.endDate) {
+        formData.append("endDate", experienceData.endDate);
+      }
+
+      formData.append(
+        "technologies",
+        JSON.stringify(experienceData.technologies || [])
+      );
+
+      if (experienceData.companyLogoFile) {
+        formData.append("companyLogo", experienceData.companyLogoFile);
+      }
+
+      const response = await experienceApi.create(formData);
+
+      if (response.success) {
+        await fetchExperiences();
+        return response.data;
+      }
+
+      throw new Error(response.message || "Failed to add experience");
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
+      throw error;
+    } finally {
+      setLoading((prev) => ({ ...prev, experiences: false }));
+    }
+  };
+
+  const updateExperience = async (id, experienceData) => {
+    setLoading((prev) => ({ ...prev, experiences: true }));
+    setError(null);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("companyName", experienceData.companyName);
+      formData.append("position", experienceData.position);
+      formData.append("employmentType", experienceData.employmentType || "");
+      formData.append("location", experienceData.location || "");
+      formData.append("startDate", experienceData.startDate);
+      formData.append(
+        "currentlyWorking",
+        String(experienceData.currentlyWorking)
+      );
+      formData.append("description", experienceData.description);
+
+      if (!experienceData.currentlyWorking && experienceData.endDate) {
+        formData.append("endDate", experienceData.endDate);
+      }
+
+      formData.append(
+        "technologies",
+        JSON.stringify(experienceData.technologies || [])
+      );
+
+      if (experienceData.companyLogoFile) {
+        formData.append("companyLogo", experienceData.companyLogoFile);
+      }
+
+      const response = await experienceApi.update(id, formData);
+
+      if (response.success) {
+        await fetchExperiences();
+        return response.data;
+      }
+
+      throw new Error(response.message || "Failed to update experience");
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
+      throw error;
+    } finally {
+      setLoading((prev) => ({ ...prev, experiences: false }));
+    }
+  };
+
+  const deleteExperience = async (id) => {
+    setLoading((prev) => ({ ...prev, experiences: true }));
+    setError(null);
+
+    try {
+      const response = await experienceApi.delete(id);
+
+      if (response.success) {
+        await fetchExperiences();
+        return response.data;
+      }
+
+      throw new Error(response.message || "Failed to delete experience");
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
+      throw error;
+    } finally {
+      setLoading((prev) => ({ ...prev, experiences: false }));
+    }
+  };
+
+  // =====================
   // Authentication
   // =====================
 
@@ -643,13 +786,13 @@ export const AdminProvider = ({ children }) => {
     localStorage.removeItem('adminProfile');
     setIsAuthenticated(false);
     setAdminName("Admin");
-    
+
     // Reset all data on logout
     setSkills([]);
     setEducationList([]);
     setQuotes([]);
     setPortfolioProjects([]);
-    
+
     // Reset profile to default
     setProfile({
       name: "Asish",
@@ -684,6 +827,7 @@ export const AdminProvider = ({ children }) => {
     // State
     skills,
     portfolioProjects,
+    experiences,
     educationList,
     quotes,
     profile,
@@ -724,7 +868,13 @@ export const AdminProvider = ({ children }) => {
     addProject,
     updateProject,
     deleteProject,
-    fetchProjects
+    fetchProjects,
+
+    // Experiences
+    fetchExperiences,
+    addExperience,
+    updateExperience,
+    deleteExperience,
   };
 
   return (
