@@ -661,6 +661,7 @@ export const AdminProvider = ({ children }) => {
       const formData = new FormData();
 
       formData.append("companyName", experienceData.companyName);
+      formData.append("companyLink", experienceData.companyLink || "");
       formData.append("position", experienceData.position);
       formData.append("employmentType", experienceData.employmentType || "");
       formData.append("location", experienceData.location || "");
@@ -682,6 +683,10 @@ export const AdminProvider = ({ children }) => {
 
       if (experienceData.companyLogoFile) {
         formData.append("companyLogo", experienceData.companyLogoFile);
+      }
+
+      if (experienceData.ImageFile) {
+        formData.append("Image", experienceData.ImageFile);
       }
 
       const response = await experienceApi.create(formData);
@@ -709,6 +714,7 @@ export const AdminProvider = ({ children }) => {
 
       formData.append("companyName", experienceData.companyName);
       formData.append("position", experienceData.position);
+      formData.append("companyLink", experienceData.companyLink || "");
       formData.append("employmentType", experienceData.employmentType || "");
       formData.append("location", experienceData.location || "");
       formData.append("startDate", experienceData.startDate);
@@ -729,6 +735,10 @@ export const AdminProvider = ({ children }) => {
 
       if (experienceData.companyLogoFile) {
         formData.append("companyLogo", experienceData.companyLogoFile);
+      }
+
+      if (experienceData.ImageFile) {
+        formData.append("Image", experienceData.ImageFile);
       }
 
       const response = await experienceApi.update(id, formData);
